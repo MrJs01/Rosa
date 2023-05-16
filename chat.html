@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+
+    </style>
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- material icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <div class="content">
+        <ul class="chat" id="chat">
+
+        </ul>
+        <form id="form_chat">
+            <textarea type="text" id="prompt"></textarea>
+            <button type="submit" class="material-icons">
+                send
+            </button>
+        </form>
+    </div>
+</body>
+<script>
+    var history_prompt = [
+
+    ]
+
+
+    $("#form_chat").submit(function (e) {
+        e.preventDefault();
+        //clear inputs
+        SendMessage();
+    });
+
+
+    function SendMessage() {
+        let prompt = $("#prompt").val();
+        $("#prompt").val("");
+
+        let time1 = new Date();
+        time1 = time1.toLocaleTimeString();
+        time1 = time1.substring(0, 5);
+        time1 = time1 + "hrs";
+        $("#chat").append(`
+        
+        <li class="receive show">
+                <div class="text-box">
+                <div class="avatar"></div>
+                    <div class="text">${prompt}</div>
+                    <div class="time">${time1}</div>
+
+                </div>
+            </li>`)
+
+        console.log(prompt);
+        $.ajax({
+            url: "http://127.0.0.1:5000/api/",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                prompt: prompt,
+                history: history_prompt
+            }),
+            dataType: "json",
+        }).done(function (data) {
+            console.log(data);
+
+            let text = data.text;
+            //trocar para br
+            text = text.replace(/\n/g, "<br>");
+
+            text.replace("Bot:", "");
+            history_prompt.push({ "question": prompt, "answer": text });
+
+            if (text == "Unable to fetch the response, Please try again.") {
+                text = "Desculpe, nao entendi. Acho que nao estou preparado para essa questao, por favor, posso te ajudar em outra questão ?"
+            }
+
+            //procurar todos links iguais [[number]](https://www.significados.com.br/google/) e substituir por um links <a href="https://www.significados.com.br/google/">>[1]</a>
+            text = text.replace(/\[\d+\]\((.*)\)/g, "<a href='$1'>$1</a>");
+
+            //time2 = 00:00hrs
+            let time2 = new Date();
+            time2 = time2.toLocaleTimeString();
+            time2 = time2.substring(0, 5);
+            time2 = time2 + "hrs";
+
+
+            $("#chat").append(`
+        
+        <li class="send show">
+                
+                <div class="text-box">
+                    <div class="avatar"></div>
+                    <div class="text">${text}</div>
+                    <div class="time">${time2}</div>
+                </div>
+            </li>`)
+            //end scroll
+            $("#chat").scrollTop($("#chat")[0].scrollHeight);
+
+        }).fail(function (a, b, c) {
+            console.log(a, b, c);
+        })
+    }
+
+
+
+</script>
+
+</html>
