@@ -1,0 +1,157 @@
+body,
+html {
+	background: #1A0231;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.content {
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	align-items: end
+}
+
+.chat {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	overflow: scroll;
+}
+
+.chat .show .avatar {
+	transform: scale(1);
+	opacity: 1;
+}
+
+.chat .show .text-box {
+	transform: scale(1);
+}
+
+.chat>li {
+	list-style: none;
+	margin: 12px 0;
+}
+
+.chat>li .avatar {
+	width: 25px;
+	height: 25px;
+	border-radius: 100px;
+	bottom: 0;
+	opacity: 0;
+	transform: scale(0);
+	transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.chat>li .text-box {
+	max-width: 415px;
+	padding: 30px;
+	display: inline-block;
+	vertical-align: top;
+	border-radius: 30px;
+	position: relative;
+	transition: all 0.2s 0.18s cubic-bezier(0.215, 0.61, 0.355, 1);
+	transform: scale(0);
+}
+
+.chat>li .time {
+	font-size: 15px;
+	margin-bottom: 12px;
+}
+
+.chat .receive {
+	position: relative;
+	text-align: right;
+}
+
+.chat .receive .avatar {
+	background: url("https://cdn-icons-png.flaticon.com/512/6596/6596121.png") no-repeat center center;
+	background-size: cover;
+	right: 0;
+}
+
+.chat .receive .text-box {
+	background: #AAA9EC;
+	font-size: 21px;
+	color: #28356f;
+	right: 0;
+	text-align: left;
+	transform-origin: bottom right;
+}
+
+
+
+.chat .receive .time {
+	color: #28356f82;
+	right: 0px;
+	position: absolute;
+	margin: 5px;
+	margin-right: 15px;
+}
+
+.chat .send {
+	position: relative;
+}
+
+.chat .send .avatar {
+	background: url("rosa.png") no-repeat center center;
+	background-size: cover;
+	bottom: 0;
+}
+
+.chat .send .text-box {
+	background: #641FA6;
+	vertical-align: top;
+	font-size: 21px;
+	color: #fff;
+	border-radius: 20px;
+	position: relative;
+	transform-origin: bottom left;
+	left: 0;
+}
+
+
+
+.chat .send .time {
+	font-size: 15px;
+	color: #acacacc7;
+	left: 0px;
+	position: absolute;
+	margin: 5px;
+	margin-left: 5px;
+	margin-left: 15px;
+	bottom: 0px;
+}
+
+#form_chat {
+	width: 100%;
+	display: flex;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+textarea[type="text"] {
+	width: 100%;
+	padding: 12px 20px;
+	box-sizing: border-box;
+	border: none;
+	border-right: 0px;
+	-webkit-transition: 0.5s;
+	height: 100%;
+	resize: none;
+	background: #AAA9EC;
+}
+
+button[type="submit"] {
+	border: none;
+	border-radius: 0px;
+	border-left: 0px;
+	background: #AAA9EC;
+
+}
+
+.content {
+	display: grid;
+}
