@@ -64,5 +64,14 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+    // result
+    public function actionResult()
+    {
+        // definir sem layout padrao
+        $this->layout = false;
+
+        return $this->render('result');
+    }
+
   
 }

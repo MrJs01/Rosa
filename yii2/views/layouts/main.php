@@ -8,6 +8,8 @@ use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
+use yii\bootstrap5\BootstrapAsset;
+BootstrapAsset::register($this);
 
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
@@ -16,16 +18,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => $this->params['met
 $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
 
-// Adiciona o Bootstrap via CDN
-$this->registerCssFile('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css', [
-    'integrity' => 'sha384-rbsA2VBKQ8o7o7uVYOScs+6pGx1pW75txjFBjRGY0Dq4zDXQBF5D5e5I7AoMRg1s',
-    'crossorigin' => 'anonymous',
-]);
-$this->registerJsFile('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js', [
-    'integrity' => 'sha384-qjC8giFi9M8ZnuH8scL8E+E7K4sIpjUOkqB/J9ltEXYofjLygp+SIiBJNlz9t/Ak',
-    'crossorigin' => 'anonymous',
-    'position' => \yii\web\View::POS_END,
-]);
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -33,6 +26,9 @@ $this->registerJsFile('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/boot
 <head>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </head>
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
@@ -52,8 +48,7 @@ $this->registerJsFile('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/boot
 <footer id="footer" class="mt-auto py-3 bg-light">
     <div class="container">
         <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; My Company <?= date('Y') ?></div>
-            <div class="col-md-6 text-center text-md-end"><?= Yii::powered() ?></div>
+            <div class="col-md-6 text-center text-md-start">&copy; <a href="https://crom.live">Crom</a> <?= date('Y') ?></div>
         </div>
     </div>
 </footer>

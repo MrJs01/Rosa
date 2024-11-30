@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\Exception;
 use yii\httpclient\Client;
+
 class GeminiAgent extends Component
 {
     public $apiKey;
@@ -55,7 +56,7 @@ class GeminiAgent extends Component
             "contents" => [
                 [
                     "parts" => [
-                        ["text" => $prompt],
+                        ["text" =>"Descreva a imagem e crie um plano detalhado. Faça um plano detalhado para criar essa pagina usando bootstrap. Siga instruções do usuario tambem se necessário:". $prompt],
                         [
                             "inline_data" => [
                                 "mime_type" => "image/jpeg",
@@ -75,7 +76,10 @@ class GeminiAgent extends Component
      */
     private function agent2($agent1Result)
     {
-        $prompt = "Crie uma página completa em HTML usando Bootstrap com base neste plano: " . $agent1Result['text'];
+
+        $text = $agent1Result['candidates'][0]['content']['parts'][0]['text'];
+
+        $prompt = "Retorne apenas o html. Não acrescente ```html e nenhum outro texto que não seja o html.Crie uma página completa em HTML usando Bootstrap com base neste plano: " . $text;
         $payload = [
             "contents" => [
                 [
@@ -94,9 +98,11 @@ class GeminiAgent extends Component
      */
     private function agent3($agent1Result, $agent2Result)
     {
+        $text1 = $agent1Result['candidates'][0]['content']['parts'][0]['text'];
+        $text2 = $agent2Result['candidates'][0]['content']['parts'][0]['text'];
         $prompt = "Resuma detalhadamente o que foi feito com base nos seguintes resultados:\n\n" .
-            "Descrição e plano do agente 1: " . $agent1Result['text'] . "\n\n" .
-            "Código HTML gerado pelo agente 2: " . $agent2Result['text'];
+            "Descrição e plano do agente 1: " . $text1 . "\n\n" .
+            "Código HTML gerado pelo agente 2: " . $text2;
 
         $payload = [
             "contents" => [
@@ -115,48 +121,47 @@ class GeminiAgent extends Component
      * Envia uma requisição para a API do Gemini.
      */
     private function sendRequest($endpoint, $payload)
-{
-    // URL base da API
-    $url = $this->apiUrl . $endpoint;
+    {
+        // URL base da API
+        $url = $this->apiUrl . $endpoint . "?key=AIzaSyA2ksuP2s0OO6USa_Fws2EULDP2EGbQPdQ";
 
-    // Converte o payload para JSON
-    $jsonPayload = json_encode($payload);
+        // Converte o payload para JSON
+        $jsonPayload = json_encode($payload);
 
-    // Inicializa o cURL
-    $ch = curl_init($url);
+        // Inicializa o cURL
+        $ch = curl_init($url);
 
-    // Configurações do cURL
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Retorna o resultado como string
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json', // Tipo de conteúdo
-        'Authorization: Bearer AIzaSyA2ksuP2s0OO6USa_Fws2EULDP2EGbQPdQ', // Autenticação com Bearer Token
-    ]);
-    curl_setopt($ch, CURLOPT_POST, true); // Método POST
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload); // Dados no corpo da requisição
+        // Configurações do cURL
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Retorna o resultado como string
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json', // Tipo de conteúdo
+        ]);
+        curl_setopt($ch, CURLOPT_POST, true); // Método POST
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload); // Dados no corpo da requisição
 
-    // Executa a requisição
-    $response = curl_exec($ch);
+        // Executa a requisição
+        $response = curl_exec($ch);
 
-    // Verifica se houve erro na requisição
-    if ($response === false) {
-        $error = curl_error($ch);
+        // Verifica se houve erro na requisição
+        if ($response === false) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            throw new \Exception("Erro ao comunicar com a API: " . $error);
+        }
+
+        // Fecha a sessão cURL
         curl_close($ch);
-        throw new \Exception("Erro ao comunicar com a API: " . $error);
+
+        // Decodifica a resposta JSON e retorna
+        $responseData = json_decode($response, true);
+
+        // Verifica se a resposta é válida
+        if (isset($responseData['error'])) {
+            throw new \Exception("Erro na resposta da API: " . $responseData['error']['message']);
+        }
+
+        return $responseData;
     }
-
-    // Fecha a sessão cURL
-    curl_close($ch);
-
-    // Decodifica a resposta JSON e retorna
-    $responseData = json_decode($response, true);
-
-    // Verifica se a resposta é válida
-    if (isset($responseData['error'])) {
-        throw new \Exception("Erro na resposta da API: " . $responseData['error']['message']);
-    }
-
-    return $responseData;
-}
 
 
     /**
@@ -183,10 +188,11 @@ class GeminiAgent extends Component
      */
     private function encodeImageToBase64($imagePath)
     {
-        $img_path = \Yii::getAlias('@app') . "/prints/" . $imagePath;
+        // web/prints/
+        $img_path = Yii::getAlias('@webroot') . '/prints/' . $imagePath;
 
-        if (!file_exists( $img_path)) {
-            return $img_path;
+        if (!file_exists($img_path)) {
+            return false;
         }
 
         return base64_encode(file_get_contents($img_path));
