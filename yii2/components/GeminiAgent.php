@@ -8,7 +8,7 @@ use yii\base\Exception;
 use yii\httpclient\Client;
 class GeminiAgent extends Component
 {
-    public $apiKey = "AIzaSyAuW8n3aaCPKO1bdIT1NR4f-mSy7ttxrYQ";
+    public $apiKey;
     public $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/';
     public $retryDelay = 15;
     public $maxRetries = 3;
