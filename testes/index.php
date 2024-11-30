@@ -249,7 +249,7 @@
 
         // Inicializa a página
         document.addEventListener("DOMContentLoaded", () => {
-            const apiKey = "AIzaSyD1nIOMhfDGGwldaKBJlE70mO6lAXY-m5c"; // Substitua pela sua chave API
+            const apiKey = ""; // Substitua pela sua chave API
             const geminiModel = new GeminiModel(apiKey);
             new VoiceRecognition('start-stop-btn', 'transcript', geminiModel);
         });
