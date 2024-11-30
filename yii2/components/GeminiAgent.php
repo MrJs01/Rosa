@@ -115,21 +115,49 @@ class GeminiAgent extends Component
      * Envia uma requisição para a API do Gemini.
      */
     private function sendRequest($endpoint, $payload)
-    {
-        $client =new Client(['baseUrl' => $this->apiUrl . $endpoint]);
-        $response = $client->createRequest()
-            ->setMethod('POST')
-            ->setHeaders(['Content-Type' => 'application/json'])
-            ->setData($payload)
-            ->addHeaders(['Authorization' => 'Bearer ' . $this->apiKey])
-            ->send();
+{
+    // URL base da API
+    $url = $this->apiUrl . $endpoint;
 
-        if ($response->isOk) {
-            return $response->data;
-        }
+    // Converte o payload para JSON
+    $jsonPayload = json_encode($payload);
 
-        throw new \Exception("Erro ao comunicar com a API: " . $response->content);
+    // Inicializa o cURL
+    $ch = curl_init($url);
+
+    // Configurações do cURL
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Retorna o resultado como string
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json', // Tipo de conteúdo
+        'Authorization: Bearer ' . $this->apiKey, // Autenticação com Bearer Token
+    ]);
+    curl_setopt($ch, CURLOPT_POST, true); // Método POST
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload); // Dados no corpo da requisição
+
+    // Executa a requisição
+    $response = curl_exec($ch);
+
+    // Verifica se houve erro na requisição
+    if ($response === false) {
+        $error = curl_error($ch);
+        curl_close($ch);
+        throw new \Exception("Erro ao comunicar com a API: " . $error);
     }
+
+    // Fecha a sessão cURL
+    curl_close($ch);
+
+    // Decodifica a resposta JSON e retorna
+    $responseData = json_decode($response, true);
+
+    // Verifica se a resposta é válida
+    if (isset($responseData['error'])) {
+        throw new \Exception("Erro na resposta da API: " . $responseData['error']['message']);
+    }
+
+    return $responseData;
+}
+
 
     /**
      * Lógica de tentativa e atraso em caso de erro.
