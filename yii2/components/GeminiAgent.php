@@ -129,7 +129,7 @@ class GeminiAgent extends Component
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Retorna o resultado como string
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json', // Tipo de conteúdo
-        'Authorization: Bearer ' . $this->apiKey, // Autenticação com Bearer Token
+        'Authorization: Bearer AIzaSyA2ksuP2s0OO6USa_Fws2EULDP2EGbQPdQ', // Autenticação com Bearer Token
     ]);
     curl_setopt($ch, CURLOPT_POST, true); // Método POST
     curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload); // Dados no corpo da requisição
