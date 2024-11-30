@@ -59,7 +59,7 @@ if (Yii::$app->request->isPost) {
         </button>
 
         <!-- Botão de envio -->
-        <button type="submit" class="btn btn-primary w-100 shadow-sm">
+        <button type="submit" class="btn btn-primary w-100 shadow-sm" id="send-button">
             <i class="bi bi-send"></i> Enviar
         </button>
     </form>
@@ -114,14 +114,14 @@ if (Yii::$app->request->isPost) {
                 }
             });
 
-            $("#form").submit(function(event) {
-
-                $(this).find('button[type="submit"]').prop('disabled', true);
-                $(this).find('input[type="file"]').prop('disabled', true);
-                $(this).find('textarea').prop('disabled', true);
-                $(this).find('input[type="submit"]').val('Enviando...');
-
-            })
+            $("#send-button").click(function() {
+                $("#form").find('textarea').trigger('disabled', true);
+                $("#form").find('button').trigger('disabled', true);
+                $("#send-button").attr('disabled', true);
+                $("#upload-button").attr('disabled', true);
+                
+                
+            });
         });
     </script>
 
