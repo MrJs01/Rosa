@@ -14,7 +14,7 @@ $config = [
     'components' => [
         'GeminiAgent' => [
         'class' => 'app\components\GeminiAgent',
-        'apiKey' => 'AIzaSyAuW8n3aaCPKO1bdIT1NR4f-mSy7ttxrYQ',
+        'apiKey' => 'AIzaSyA2ksuP2s0OO6USa_Fws2EULDP2EGbQPdQ',
     ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
