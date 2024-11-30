@@ -7,11 +7,10 @@ use yii\helpers\Html;
 
 $this->title = 'Print to Code gemini';
 
-// verificar post
 if (Yii::$app->request->isPost) {
-    $image = $_FILES['image'];
-    $image['base64'] = base64_encode(file_get_contents($image['tmp_name']));
-    if (isset($image['type'], $image['base64'])) { // Verifica se as chaves 'type' e 'base64' estão presentes
+    $image = $_FILES['image'] ?? null;
+    if ($image) {
+        $image['base64'] = base64_encode(file_get_contents($image['tmp_name']));
         $image_name = uniqid() . '.' . explode('/', $image['type'])[1];
         $image_path = Yii::getAlias('@webroot') . '/prints/' . $image_name;
         file_put_contents($image_path, base64_decode($image['base64']));
@@ -20,59 +19,115 @@ if (Yii::$app->request->isPost) {
         $geminiAgent = new GeminiAgent();
         $results = $geminiAgent->processImageAndPrompt($image_name, $prompt);
 
-        // set result session
         $_SESSION['result'] = $results['agent2']['candidates'][0]['content']['parts'][0]['text'];
     } else {
-        $results = []; // Caso a imagem ou suas chaves não existam
         echo "Erro ao enviar a imagem.";
-        echo "<pre>";
-        print_r($image);
-        echo "</pre>";
     }
 } else {
     $results = [];
 }
 
-
 ?>
-<div class="container mt-5 ">
-    <!-- Título da página -->
+<div class="container mt-5">
     <div class="section-title">
         <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
     </div>
-    <!-- // formulario para enviar a imagem e o prompt -->
-    <form action="/" method="post" enctype="multipart/form-data">
+    <form id="form" action="/" method="post" enctype="multipart/form-data" class="p-4 border rounded shadow-sm bg-light">
         <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>">
 
-        <div class="mb-3">
-            <label for="image" class="form-label">Imagem:</label>
-            <input type="file" name="image" id="image" class="form-control" accept="image/*" required>
-            <div id="imageHelp" class="form-text">Escolha uma imagem para enviar.</div>
+        <!-- Pré-visualização da imagem -->
+        <div id="image-preview-container" class="mb-4 text-center" style="display: none;">
+            <img id="image-preview" src="#" alt="Imagem Colada"
+                style="max-width: 100%; height: 200px; object-fit: contain;"
+                class="img-fluid border rounded">
         </div>
 
+        <!-- Campo de texto -->
         <div class="mb-3">
-            <label for="prompt" class="form-label">Prompt:</label>
-            <input type="text" name="prompt" id="prompt" class="form-control" placeholder="Digite o prompt" required>
-            <div id="promptHelp" class="form-text">Insira uma descrição ou prompt para a imagem.</div>
+            <label for="prompt" class="form-label fw-semibold">Prompt:</label>
+            <textarea name="prompt" id="prompt"
+                class="form-control shadow-sm"
+                placeholder="Digite ou cole o prompt aqui"
+                rows="4" required></textarea>
+            <div id="promptHelp" class="form-text text-muted">Insira uma descrição ou prompt para a imagem.</div>
         </div>
 
+        <!-- Upload de imagem -->
+        <input type="file" name="image" id="image" class="d-none" accept="image/*">
+        <button type="button" id="upload-button" class="btn btn-outline-secondary w-100 mb-3">
+            <i class="bi bi-upload"></i> Selecionar Imagem
+        </button>
 
-        <button type="submit" class="btn btn-primary w-100">Enviar</button>
+        <!-- Botão de envio -->
+        <button type="submit" class="btn btn-primary w-100 shadow-sm">
+            <i class="bi bi-send"></i> Enviar
+        </button>
     </form>
 
 
-    <?php
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const uploadButton = document.getElementById("upload-button");
+            const imageInput = document.getElementById("image");
+            const promptTextarea = document.getElementById("prompt");
+            const imagePreviewContainer = document.getElementById("image-preview-container");
+            const imagePreview = document.getElementById("image-preview");
 
-    if (!empty($results)) {
+            // Clique no botão para abrir o seletor de arquivo
+            uploadButton.addEventListener("click", () => imageInput.click());
 
-    ?>
+            // Atualizar pré-visualização quando o arquivo é selecionado manualmente
+            imageInput.addEventListener("change", (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        imagePreviewContainer.style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
 
+            // Permitir colar imagens no textarea
+            promptTextarea.addEventListener("paste", (event) => {
+                const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+                for (let item of items) {
+                    if (item.type.startsWith("image/")) {
+                        const file = item.getAsFile();
+                        const reader = new FileReader();
 
+                        // Exibir a imagem colada na pré-visualização
+                        reader.onload = (e) => {
+                            imagePreview.src = e.target.result;
+                            imagePreviewContainer.style.display = "block";
+                        };
+                        reader.readAsDataURL(file);
 
+                        // Adicionar a imagem ao input file para envio
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        imageInput.files = dataTransfer.files;
 
+                        alert("Imagem adicionada ao formulário!");
+                    }
+                }
+            });
 
+            $("#form").submit(function(event) {
+
+                $(this).find('button[type="submit"]').prop('disabled', true);
+                $(this).find('input[type="file"]').prop('disabled', true);
+                $(this).find('textarea').prop('disabled', true);
+                $(this).find('input[type="submit"]').val('Enviando...');
+
+            })
+        });
+    </script>
+
+    <?php if (!empty($results)) { ?>
         <div class="sections-container">
-            <!-- mostrar imagem enviada -->
+            <!-- exibição dos resultados -->
             <div class="section">
                 <div class="card">
                     <div class="card-header">
@@ -134,9 +189,9 @@ if (Yii::$app->request->isPost) {
                     </div>
                     <div class="card-body">
                         <p><strong>Exibição do HTML no iframe:</strong></p>
-                        <div id="agent2-iframe"> <?= ($results['agent2']['candidates'][0]['content']['parts'][0]['text']) ?> </div>
+                        <iframe src="/result?return=false" id="agent2-iframe" frameborder="0"></iframe>
                         <!-- result -->
-                         <a class="btn btn-primary" href="/result">Ver Resultado</a>
+                        <a class="btn btn-primary" href="/result">Ver Resultado</a>
                     </div>
                 </div>
             </div>

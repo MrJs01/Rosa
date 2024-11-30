@@ -2,6 +2,7 @@
 
 echo $_SESSION['result'] ? $_SESSION['result'] : 'Fail <a href="/>Try again</a>';
 
+if(!isset($_GET['return'])) {
 ?>
 
 <a href="/" id="try-again">Try again</a>
@@ -17,3 +18,6 @@ echo $_SESSION['result'] ? $_SESSION['result'] : 'Fail <a href="/>Try again</a>'
         border-radius: 5px;
     }
 </style>
+
+<?php
+}
