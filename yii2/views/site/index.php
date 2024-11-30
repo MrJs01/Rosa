@@ -120,7 +120,7 @@ if (Yii::$app->request->isPost) {
                 $("#send-button").attr('disabled', true);
                 $("#upload-button").attr('disabled', true);
                 
-                
+                $("#form").submit();
             });
         });
     </script>
