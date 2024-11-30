@@ -17,7 +17,7 @@ class GeminiAgent extends Component
     // quando iniciar o componente
     public function init()
     {
-        $this->apiKey = require __DIR__ . '/apikeyGemini.php';
+        $this->apiKey = (require __DIR__ . '/apikeyGemini.php')['key'];
         // $this->apiKey['key'] = "API_KEY";
         parent::init();
     }
@@ -64,7 +64,7 @@ class GeminiAgent extends Component
             "contents" => [
                 [
                     "parts" => [
-                        ["text" =>"Descreva a imagem e crie um plano detalhado. Faça um plano detalhado para criar essa pagina usando bootstrap. Siga instruções do usuario tambem se necessário:". $prompt],
+                        ["text" => "Descreva a imagem e crie um plano detalhado. Faça um plano detalhado para criar essa pagina usando bootstrap. Siga instruções do usuario tambem se necessário:" . $prompt],
                         [
                             "inline_data" => [
                                 "mime_type" => "image/jpeg",
@@ -76,7 +76,13 @@ class GeminiAgent extends Component
             ]
         ];
 
-        return $this->sendRequest("gemini-1.5-flash:generateContent", $payload);
+        $result = $this->sendRequest("gemini-1.5-flash:generateContent", $payload);
+        if ($result['candidates'][0]['content']['parts'][0]['text'] == null) {
+            // refazer
+            return $this->agent1($encodedImage, $prompt);
+        }
+
+        return $result;
     }
 
     /**
@@ -98,7 +104,13 @@ class GeminiAgent extends Component
             ]
         ];
 
-        return $this->sendRequest("gemini-1.5-flash:generateContent", $payload);
+        $result = $this->sendRequest("gemini-1.5-flash:generateContent", $payload);
+        if ($result['candidates'][0]['content']['parts'][0]['text'] == null) {
+            // refazer
+            return $this->agent2($agent1Result);
+        }
+
+        return $result;
     }
 
     /**
@@ -122,7 +134,13 @@ class GeminiAgent extends Component
             ]
         ];
 
-        return $this->sendRequest("gemini-1.5-flash:generateContent", $payload);
+        $result = $this->sendRequest("gemini-1.5-flash:generateContent", $payload);
+        if ($result['candidates'][0]['content']['parts'][0]['text'] == null) {
+            // refazer
+            return $this->agent3($agent1Result, $agent2Result);
+        }
+
+        return $result;
     }
 
     /**
