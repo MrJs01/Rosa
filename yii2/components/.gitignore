@@ -1,1 +1,3 @@
-apikeyGemini.php
+*
+!.gitignore
+!GeminiAgent.php
