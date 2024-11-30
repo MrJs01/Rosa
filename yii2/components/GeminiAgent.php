@@ -14,6 +14,14 @@ class GeminiAgent extends Component
     public $retryDelay = 15;
     public $maxRetries = 3;
 
+    // quando iniciar o componente
+    public function init()
+    {
+        $this->apiKey = require __DIR__ . '/apikeyGemini.php';
+        // $this->apiKey['key'] = "API_KEY";
+        parent::init();
+    }
+
     /**
      * Função principal para processar a imagem e o prompt.
      */
@@ -123,7 +131,7 @@ class GeminiAgent extends Component
     private function sendRequest($endpoint, $payload)
     {
         // URL base da API
-        $url = $this->apiUrl . $endpoint . "?key=AIzaSyA2ksuP2s0OO6USa_Fws2EULDP2EGbQPdQ";
+        $url = $this->apiUrl . $endpoint . "?key=" . $this->apiKey;
 
         // Converte o payload para JSON
         $jsonPayload = json_encode($payload);
