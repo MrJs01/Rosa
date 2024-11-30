@@ -119,7 +119,7 @@ if (Yii::$app->request->isPost) {
                 $("#form").find('button').trigger('disabled', true);
                 $("#send-button").attr('disabled', true);
                 $("#upload-button").attr('disabled', true);
-                
+
                 $("#form").submit();
             });
         });
@@ -227,8 +227,10 @@ if (Yii::$app->request->isPost) {
         </style>
 
 
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <script>
+        <script type="module">
+            import {
+                marked
+            } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
             document.addEventListener("DOMContentLoaded", function() {
                 document.getElementById("agent1-description").innerHTML = marked.parse(document.getElementById("agent1-description").innerHTML);
                 document.getElementById("agent3-summary").innerHTML = marked.parse(document.getElementById("agent3-summary").innerHTML);
