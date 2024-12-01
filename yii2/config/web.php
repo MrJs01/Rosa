@@ -52,6 +52,9 @@ $config = [
             'rules' => [
                 '/' => 'site/index',
                 '/result' => 'site/result',
+                '/chat' => 'site/chat',
+                '/canvas' => 'site/canvas',
+                '/canvas/process' => 'site/canvas-process',
             ],
         ],
     ],
