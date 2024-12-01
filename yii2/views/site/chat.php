@@ -135,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         background-image: url("https://crom.live/wp-content/uploads/2024/11/cropped-rosa-1-1-scaled-1.jpeg")  !important;
         background-size: cover;
         background-repeat: no-repeat;
+        background-position: center;
 
     }
 
