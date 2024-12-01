@@ -55,6 +55,7 @@ $config = [
                 '/chat' => 'site/chat',
                 '/canvas' => 'site/canvas',
                 '/canvas/process' => 'site/canvas-process',
+                '/agent' => 'site/agent',
             ],
         ],
     ],

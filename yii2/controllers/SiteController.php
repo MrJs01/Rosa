@@ -142,4 +142,8 @@ class SiteController extends Controller
         return $this->render('chat');
     }
     
+    // agent
+    public function actionAgent(){
+        return $this->render('agent');
+    }
 }
