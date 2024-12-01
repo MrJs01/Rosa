@@ -98,6 +98,8 @@ class MetaAgent
             shuffle($agents_random);
 
             
+        }else{
+            $agents_random = $this->agents;
         }
 
         foreach ($agents_random as $agent) {
