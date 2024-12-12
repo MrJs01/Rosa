@@ -30,9 +30,16 @@ if (Yii::$app->request->isPost) {
 ?>
 <div class="container mt-5">
     <div class="section-title">
+        <h1 class="text-center">Instruções</h1>
+    </div>
+    <p class="text-center">Envie a imagem de um design de site que gostaria de converter para códigos HTML. Você pode usar um prompt para ajudar o agente a entender o que deseja. Use ctrl-v para colar a imagem ou usando o botão de upload para selecionar a imagem. Use a caixa de texto para inserir o prompt instruções mais detalhadas para o agente gerar o código.</p>
+</div>
+
+<div class="container mt-5">
+    <div class="section-title">
         <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
     </div>
-    <form id="form" action="/" method="post" enctype="multipart/form-data" class="p-4 border rounded shadow-sm bg-light">
+    <form id="form" action="/" method="post" enctype="multipart/form-data" class="p-4 border rounded shadow-sm bg-dark">
         <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>">
 
         <!-- Pré-visualização da imagem -->
@@ -42,26 +49,30 @@ if (Yii::$app->request->isPost) {
                 class="img-fluid border rounded">
         </div>
 
-        <!-- Campo de texto -->
-        <div class="mb-3">
-            <label for="prompt" class="form-label fw-semibold">Prompt:</label>
-            <textarea name="prompt" id="prompt"
-                class="form-control shadow-sm"
-                placeholder="Digite ou cole o prompt aqui"
-                rows="4" required></textarea>
-            <div id="promptHelp" class="form-text text-muted">Insira uma descrição ou prompt para a imagem.</div>
-        </div>
+
 
         <!-- Upload de imagem -->
         <input type="file" name="image" id="image" class="d-none" accept="image/*">
-        <button type="button" id="upload-button" class="btn btn-outline-secondary w-100 mb-3">
-            <i class="bi bi-upload"></i> Selecionar Imagem
-        </button>
 
-        <!-- Botão de envio -->
-        <button type="submit" class="btn btn-primary w-100 shadow-sm" id="send-button">
-            <i class="bi bi-send"></i> Enviar
-        </button>
+        <div class="input-group mb-3">
+            <span class="input-group-text p-0" style="max-height: 40px;">
+                <button type="button" id="upload-button" class="btn btn-outline-secondary w-100 h-100 border-0 rounded-0">
+                    <i class="material-icons">upload</i>
+                </button>
+            </span>
+            <div class="form-control border-0 bg-transparent text-white">
+                <textarea name="prompt" id="prompt"
+                    class="form-control shadow-sm"
+                    placeholder="Digite ou cole o prompt aqui"
+                    rows="4" required></textarea>
+            </div>
+            <span class="input-group-text p-0" style="max-height: 40px;">
+                <button type="submit" class="btn btn-primary w-100 h-100 shadow-sm border-0" id="send-button">
+                    <i class="material-icons">send</i>
+                </button>
+            </span>
+        </div>
+
     </form>
 
 
@@ -162,7 +173,7 @@ if (Yii::$app->request->isPost) {
                     </div>
                     <div class="card-body">
                         <p><strong>HTML Gerado (Bootstrap):</strong></p>
-                        <pre class="bg-light p-3" id="agent2-html"><?= Html::encode($results['agent2']['candidates'][0]['content']['parts'][0]['text']) ?></pre>
+                        <pre class="bg-dark p-3" id="agent2-html"><?= Html::encode($results['agent2']['candidates'][0]['content']['parts'][0]['text']) ?></pre>
                     </div>
                 </div>
             </div>

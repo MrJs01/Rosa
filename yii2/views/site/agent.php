@@ -19,7 +19,7 @@ class Agent
     public function execute()
     {
         $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={$this->apiKey}";
-    
+
         $data = [
             "contents" => [
                 [
@@ -36,27 +36,27 @@ class Agent
                 ]
             ]
         ];
-    
+
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
-    
+
         $response = curl_exec($ch);
-    
+
         if (curl_errno($ch)) {
             echo 'Error:' . curl_error($ch);
         }
-    
+
         curl_close($ch);
-    
+
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    
+
         if ($httpCode !== 200) {
             throw new Exception('Erro ao chamar API');
         }
-    
+
         // Retorna a resposta
         return json_decode($response, true);
     }
@@ -92,13 +92,11 @@ class MetaAgent
     {
         $results = [];
 
-        if($random_order) {
+        if ($random_order) {
             $agents_random = $this->agents;
             // random
             shuffle($agents_random);
-
-            
-        }else{
+        } else {
             $agents_random = $this->agents;
         }
 
@@ -210,20 +208,15 @@ if (!empty($_POST)) {
 ?>
 
 <!-- formulario para criar agente -->
-<div class="container mt-4">
-    <h2 class="mb-4">Create Agent:</h2>
+<div class="container mt-4 border p-4">
+    <h3 class="mb-4">Criar Agentes</h3>
+    <p>O nome do agente será apenas para identificalo na conversa dos agentes. É importante que use o mesmo nome caso queira atribuir mais de uma tarefa ao mesmo agente.</p>
     <div class="row">
         <div class="col-md-6">
-            <form method="post" id="create-agent-form">
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="task">Task:</label>
-                    <input type="text" class="form-control" id="task" name="task" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Create Agent</button>
+            <form method="post" id="create-agent-form" class="input-group mb-3">
+                <input type="text" class="form-control" id="name" name="name" placeholder="Agent Name" required>
+                <input type="text" class="form-control" id="task" name="task" placeholder="Task" required>
+                <button type="submit" class="btn btn-primary material-icons">add</button>
             </form>
         </div>
         <div class="col-md-6" id="agent-list"></div>
@@ -283,26 +276,59 @@ if (!empty($_POST)) {
 </script>
 
 <!-- formalrio de tarefa e configuracoes -->
-
-<div class="container mt-4">
-    <h2 class="mb-4">Execute Task:</h2>
+<div class="container mt-4 border p-4 rounded">
+    <h2 class="mb-4">Execute Task</h2>
     <form method="post" action="/agent" id="execute-task-form">
         <input type="hidden" name="agents_json" value="">
         <input type="hidden" name="_csrf" value="<?= Yii::$app->request->getCsrfToken() ?>">
 
-        <div class="form-group">
-            <label for="task">Task:</label>
-            <input type="text" class="form-control" id="task" name="task" required>
+        <div class="mb-3">
+            <label for="task" class="form-label">Descrição da Tarefa</label>
+            <input type="text" class="form-control" id="task" name="task" required placeholder="Digite a descrição da tarefa">
         </div>
-        <div class="form-group">
-            <label for="numExecutions">Number of Executions:</label>
-            <input type="number" class="form-control" id="numExecutions" name="numExecutions" min="1" required>
+
+        <div class="mb-3">
+            <label for="numExecutions" class="form-label">Quantidade de Execuções</label>
+            <input type="number" class="form-control" id="numExecutions" name="numExecutions" min="1" required placeholder="Quantidade" style="max-width: 200px;" value="1">
         </div>
-        <!-- checkbox random order -->
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="random_order" name="random_order">
-            <label class="form-check-label" for="random_order">Random Order</label>
+
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="random_order" name="random_order" value="0">
+            <label class="form-check-label" for="random_order">Execução Aleatória</label>
         </div>
-        <button type="submit" class="btn btn-primary">Execute Task</button>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="material-icons">play_arrow</i> Executar
+        </button>
     </form>
+</div>
+
+<div class="container mt-4 border p-4 rounded">
+    <h2 class="mb-4">Instruções de Uso</h2>
+    <ol>
+        <li>Crie agentes com o formulário acima.</li>
+        <li>Execute uma tarefa com o formulário acima.</li>
+        <li>Aguarde a conclusão da tarefa.</li>
+        <li>Visualize os resultados.</li>
+        <li>(Opcional) Ative o checkbox para executar os agentes em ordem aleatória.</li>
+    </ol>
+    <p class="mt-4">
+        Esse projeto tem a finalidade de mostrar como um agente pode executar tarefas. 
+        Agentes de inteligência artificial (IA) são programas que podem interagir com o ambiente, 
+        coletar dados e realizar tarefas para atingir metas. Eles podem ser aplicados em diversos contextos, como:
+    </p>
+    <ul>
+        <li>Gestão da produção</li>
+        <li>Construção</li>
+        <li>Serviços de legendas e transcrições</li>
+    </ul>
+    <div class="text-danger mt-4">
+        <p>Apenas um agente pode executar uma tarefa ao mesmo tempo.</p>
+        <p>Os agentes devem ter um nome e uma tarefa.</p>
+        <p>A tarefa deve ser uma descrição clara e concisa.</p>
+        <p>Os agentes executam em ordem, usando o histórico dos agentes anteriores.</p>
+    </div>
+    <p class="mt-3">
+        Mais informações no <a href="https://github.com/MrJs01/Rosa" target="_blank">projeto no GitHub</a>.
+    </p>
 </div>

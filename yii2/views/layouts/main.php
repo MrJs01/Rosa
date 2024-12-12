@@ -6,6 +6,7 @@
 use app\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\BootstrapAsset;
+
 BootstrapAsset::register($this);
 
 $this->registerCsrfMetaTags();
@@ -19,7 +20,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="h-100">
+<html lang="<?= Yii::$app->language ?>" class="h-100" data-bs-theme="dark">
+
 <head>
     <title><?= ($this->title) ?></title>
     <?php $this->head() ?>
@@ -28,39 +30,46 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-S0YEYR85MZ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S0YEYR85MZ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'G-S0YEYR85MZ');
-</script>
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-S0YEYR85MZ');
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
+        rel="stylesheet">
 </head>
+
 <body class="d-flex flex-column h-100">
-<?php $this->beginBody() ?>
+    <?php $this->beginBody() ?>
 
 
 
-<main id="main" class="flex-shrink-0 " role="main">
-    <div class="container">
-        <?php if (!empty($this->params['breadcrumbs'])): ?>
-            <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
-        <?php endif ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
-    </div>
-</main>
-
-<footer id="footer" class="mt-auto py-3 bg-light">
-    <div class="container">
-        <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; <a href="https://crom.live">Crom</a> <?= date('Y') ?></div>
+    <main id="main" class="flex-shrink-0 " role="main">
+        <div class="container">
+            <?php if (!empty($this->params['breadcrumbs'])): ?>
+                <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
+            <?php endif ?>
+            <?= Alert::widget() ?>
+            <?= $content ?>
         </div>
-    </div>
-</footer>
+    </main>
 
-<?php $this->endBody() ?>
+    <footer id="footer" class="mt-auto py-3 bg-dark">
+        <div class="container">
+            <div class="row text-muted">
+                <div class="col-md-6 text-center text-md-start">&copy; <a href="https://crom.live">Crom</a> <?= date('Y') ?></div>
+            </div>
+        </div>
+    </footer>
+
+    <?php $this->endBody() ?>
 </body>
+
 </html>
 <?php $this->endPage() ?>
